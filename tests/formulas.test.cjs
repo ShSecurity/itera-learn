@@ -1,0 +1,3 @@
+'use strict';
+const assert=require('node:assert/strict'),katex=require('../assets/vendor/katex.min.js'),D=require('../assets/course/advanced-data.js'),{catalog}=require('../assets/course/formulas.js');
+let expressions=0,topics=0;for(let id=2;id<=8;id++){assert.equal(catalog[id].length,D.modules[id].topics.length);for(const entry of catalog[id]){assert.ok(entry.tex.length>0);assert.ok(entry.example.length>0);topics++;for(const source of [...entry.tex,...entry.example]){const html=katex.renderToString(source,{displayMode:true,throwOnError:true,trust:false,strict:'error'});assert.match(html,/<math/);assert.doesNotMatch(html,/katex-error/);expressions++;}}}console.log(`${topics} temas y ${expressions} expresiones: TeX válido y MathML accesible.`);

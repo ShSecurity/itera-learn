@@ -1,0 +1,41 @@
+name: Publish ITERA Learn
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the published revision
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare the static site
+        shell: bash
+        run: |
+          mkdir _site
+          cp -R index.html assets modulo-{1..8} videos libros .nojekyll _site/
+          test -s _site/index.html
+          for module in {1..8}; do test -s "_site/modulo-$module/index.html"; done
+      - name: Upload the static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

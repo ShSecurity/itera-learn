@@ -1,0 +1,20 @@
+'use strict';
+const assert=require('node:assert/strict'),M=require('../assets/course/advanced-math.js'),D=require('../assets/course/advanced-data.js');global.CourseMath=M;require('../assets/course/labs.js');require('../assets/course/advanced-labs.js');
+const near=(a,b,t=1e-7)=>assert.ok(Math.abs(a-b)<=t*Math.max(1,Math.abs(b)),`${a} ≠ ${b}`);
+for(const [method,tol]of [['euler',.07],['heun',.002],['rk4',2e-7],['adams',1e-6],['milne',1e-6],['taylor',.002]]){const r=M.ode((x,y)=>y,0,1,1,20,method,(x,y)=>y);near(r.y,Math.E,tol);near(r.rows.at(-1)[1],1);}
+const e10=Math.abs(M.ode((x,y)=>y,0,1,1,10,'euler').y-Math.E),e20=Math.abs(M.ode((x,y)=>y,0,1,1,20,'euler').y-Math.E);assert.ok(e10/e20>1.8&&e10/e20<2.1);
+near(M.ode45((x,y)=>y,0,1,1,1e-9).y,Math.E,1e-8);assert.throws(()=>M.ode((x,y)=>y,0,1,1,2,'adams'));const stiff=M.ode((x,y)=>-50*y,0,1,1,20,'implicit');assert.ok(Math.abs(stiff.y)<1e-8);
+const oscillator=M.odeSystem((x,y,z)=>z,(x,y,z)=>-y,0,2*Math.PI,1,0,200);near(oscillator.y,1,1e-7);near(oscillator.z,0,1e-7);
+const bvp=M.boundary(()=>0,()=>0,()=>2,0,1,0,1,20);bvp.rows.forEach(([x,y])=>near(y,x*x));near(bvp.residual,0,1e-9);
+const nonlinear=M.boundaryNonlinear((x,y,z)=>y*y-x**4+2,0,1,0,1,20);assert.equal(nonlinear.converged,true);nonlinear.rows.forEach(([x,y])=>near(y,x*x,1e-7));
+const shot=M.shooting((x,y,z)=>-y,0,1,0,1);assert.equal(shot.converged,true);near(shot.y,1);near(shot.slope,1/Math.sin(1));
+for(const kind of ['heat','wave']){const p=M.evolution(kind,1,.1,1,20,100);assert.ok(p.error<.002);near(p.rows[0][1],0);near(p.rows.at(-1)[1],0);}assert.throws(()=>M.evolution('heat',1,1,1,20,10));assert.throws(()=>M.evolution('wave',1,1,1,20,10));const plate=M.laplace(8,1);assert.equal(plate.converged,true);assert.ok(plate.u.flat().every(x=>x>=0&&x<=1));assert.ok(plate.residual<1e-7);
+near(M.golden(x=>(x-2)**2+1,-2,5).x,2);near(M.minimize1(x=>(x-2)**2+1,x=>2*(x-2),()=>2).x,2);assert.equal(M.minimize1(x=>-x*x,x=>-2*x,()=>-2,0).converged,false);
+for(const method of ['gradient','newton2']){const r=M.minimize2((x,y)=>(x-1)**2+2*(y+2)**2,4,3,method);assert.equal(r.converged,true);assert.equal(r.positive,true);near(r.x,1);near(r.y,-2);}
+for(const method of ['gn','lm']){const points=Array.from({length:5},(_,x)=>[x,2*Math.exp(.3*x)]),r=M.nonlinearFit(points,1,.1,method);assert.equal(r.converged,true);near(r.a,2);near(r.b,.3);}
+const lp=M.simplex([[1,1],[1,0],[0,1]],[4,2,3],[3,2]);assert.equal(lp.status,'optimal');near(lp.value,10);near(lp.x[0],2);near(lp.x[1],2);assert.ok(lp.slack.every(s=>s>=-1e-10));assert.equal(M.simplex([[-1]],[0],[1]).status,'unbounded');assert.throws(()=>M.simplex([[1]],[-1],[1]));
+const bits=M.floatInfo(.1);assert.equal(bits.hex,'3fb999999999999a');assert.equal(bits.fraction.length,52);assert.equal(M.floatInfo(Number.MIN_VALUE).classification,'subnormal');assert.equal(M.floatInfo(-0).sign,1);assert.equal(M.floatInfo(1).spacing,Number.EPSILON);assert.equal(M.decimalSum(['0.1','0.2']),'0.3');assert.equal(M.decimalSum(['1e16','1','-1e16']),'1');assert.equal(M.sums([1e16,1,-1e16]).neumaier,1);
+const sim=M.monteCarlo(5000,123);assert.deepEqual(sim,M.monteCarlo(5000,123));assert.ok(sim.se>0);assert.notEqual(sim.estimate,M.monteCarlo(5000,124).estimate);assert.throws(()=>M.monteCarlo(0,1));
+let generated=0;for(let run=0;run<100;run++)for(const id of [6,7,8])for(let i=0;i<D.modules[id].topics.length;i++)for(const level of ['basico','intermedio','reto']){const q=D.question(id,i,level,'exam');assert.equal(new Set(q.opts).size,4);assert.equal(q.hints[q.correct],'');if(q.numeric)near(Number(q.opts[q.correct]),q.answer);generated++;}
+const methods=new Set();for(const id of [6,7,8])for(const topic of D.modules[id].topics)for(const method of CourseLabs.methods(topic.lab)){methods.add(method);const values=Object.fromEntries(CourseLabs.fields(method).map(f=>[f.key,String(f.value)]));assert.ok(CourseLabs.run(method,values).summary);}
+console.log(`Passed: independent ODE/BVP/PDE references, optimization, LP statuses, binary64, decimal sums, reproducible simulation, ${methods.size} labs and ${generated} questions.`);

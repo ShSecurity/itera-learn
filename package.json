@@ -1,0 +1,16 @@
+{
+  "name": "itera-learn",
+  "private": true,
+  "scripts": {
+    "test": "node tests/module.test.cjs && node tests/course.test.cjs && node tests/advanced.test.cjs && node tests/formulas.test.cjs",
+    "test:browser": "node tests/browser.test.cjs && node tests/course.browser.test.cjs && node tests/advanced.browser.test.cjs && node tests/formulas.browser.test.cjs",
+    "test:home:browser": "node tests/home.browser.test.cjs",
+    "test:formulas": "node tests/formulas.test.cjs",
+    "test:formulas:browser": "node tests/formulas.browser.test.cjs",
+    "test:review": "node tests/review.browser.test.cjs && node tests/ode-review.browser.test.cjs && node tests/review-labs.browser.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.0",
+    "playwright": "^1.58.0"
+  }
+}

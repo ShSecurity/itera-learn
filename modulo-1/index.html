@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 1: Errores | ITERA Learn</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c2410c'/%3E%3Cpath d='M5 20c3 0 4-9 7-9s4 10 7 10 4-7 8-7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/vendor/all.min.css">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/vendor/prism-tomorrow.min.css">
+<link rel="stylesheet" href="modulo.css">
+</head>
+<body data-module="1">
+
+<header class="hdr">
+  <a href="../index.html" class="back"><i class="fa-solid fa-arrow-left"></i> ITERA</a>
+  <div class="htitle">Módulo 1 · <em>Errores</em></div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="main-prog"></div></div>
+    <span id="prog-label" aria-live="polite">0 de 8 temas</span>
+  </div>
+  <button class="topics-btn" id="topics-btn" aria-controls="module-topics" aria-expanded="false"
+    onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'false')">Temas</button>
+  <button class="theme-btn" id="theme-btn" title="Cambiar tema" aria-label="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
+</header>
+
+<div class="body">
+<aside class="sidebar" id="module-topics">
+  <div class="sb-title">Contenido del módulo</div>
+  <a href="#s1" class="nav-item" data-sid="s1"><span class="nav-chk" id="chk-s1">1</span><span>Introducción</span></a>
+  <a href="#s2" class="nav-item" data-sid="s2"><span class="nav-chk" id="chk-s2">2</span><span>Números aproximados y redondeo</span></a>
+  <a href="#s3" class="nav-item" data-sid="s3"><span class="nav-chk" id="chk-s3">3</span><span>Error absoluto y relativo</span></a>
+  <a href="#s4" class="nav-item" data-sid="s4"><span class="nav-chk" id="chk-s4">4</span><span>Clasificación de errores</span></a>
+  <a href="#s5" class="nav-item" data-sid="s5"><span class="nav-chk" id="chk-s5">5</span><span>Cifras significativas</span></a>
+  <a href="#s6" class="nav-item" data-sid="s6"><span class="nav-chk" id="chk-s6">6</span><span>Propagación de errores</span></a>
+  <a href="#s7" class="nav-item" data-sid="s7"><span class="nav-chk" id="chk-s7">7</span><span>Condicionamiento</span></a>
+  <a href="#s8" class="nav-item" data-sid="s8"><span class="nav-chk" id="chk-s8">8</span><span>Convergencia</span></a>
+  <div class="sb-sep"></div>
+  <a href="#exam" class="sb-exam locked" inert><i class="fa-solid fa-scroll"></i> Examen Final</a>
+  <div class="sb-score" id="sb-score" role="status"></div>
+  <div class="sb-sep"></div>
+  <div class="sb-title">Recursos libres</div>
+  <a href="#video" class="nav-item"><span class="nav-chk"><i class="fa-solid fa-play" aria-hidden="true"></i></span><span>Video</span></a>
+  <a href="#formulas" class="nav-item"><span class="nav-chk"><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i></span><span>Fórmulas</span></a>
+  <a href="#progress" class="nav-item">Guardar / recuperar progreso</a>
+</aside>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 1: INTRODUCCIÓN
+══════════════════════════════════════ -->
+<section class="ls" id="s1">
+  <div class="sh">
+    <div class="snum" id="snum-s1">1</div>
+    <div>
+      <h2 class="stitle">Introducción a los Métodos Numéricos</h2>
+      <p class="ssub">1.1 · 1.2 · 1.3 — Conceptos fundamentales</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Los <strong>métodos numéricos</strong> son técnicas mediante las cuales se formulan y resuelven problemas matemáticos con operaciones aritméticas. Habitualmente producen soluciones <em>aproximadas</em>; el análisis del error permite evaluar su confiabilidad.</p>
+    <p>¿Por qué usarlos? Muchos problemas reales no tienen solución analítica cerrada: ecuaciones no lineales, integrales complejas, sistemas de ecuaciones grandes, ecuaciones diferenciales con condiciones de frontera complicadas. Para todos esos casos, los métodos numéricos son la herramienta principal.</p>
+    <div class="ibox info"><i class="fa-solid fa-lightbulb"></i><p><strong>Aplicación en Ingeniería de Sistemas:</strong> los algoritmos de búsqueda, aprendizaje automático, simulación de redes y optimización de recursos usan métodos numéricos en su núcleo.</p></div>
+    <p>El uso de la computadora introduce dos consecuencias:</p>
+    <ul>
+      <li>Los números se representan con <strong>precisión finita</strong> (punto flotante), generando pequeños errores en cada operación.</li>
+      <li>Los procesos infinitos (series, iteraciones) se <strong>truncan</strong> después de un número finito de pasos.</li>
+    </ul>
+    <p>Por eso, el <strong>análisis del error</strong> es el primer tema: antes de usar un método, necesitas saber qué tan confiable es su resultado.</p>
+    <div class="ibox info"><i class="fa-solid fa-route" aria-hidden="true"></i><p>Estudia los temas en el orden que prefieras. Cada intento usa un nuevo orden y, cuando corresponde, nuevos datos.</p></div>
+  </div>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="qbox" id="quiz-s1">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 1</div>
+      <span class="qbadge" id="qbadge-s1">0 / 2</span>
+    </div>
+    <div class="qbody" id="qbody-s1"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 2: NÚMEROS APROXIMADOS Y REDONDEO
+══════════════════════════════════════ -->
+<section class="ls" id="s2" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s2">2</div>
+    <div>
+      <h2 class="stitle">Números exactos y aproximados · Redondeo</h2>
+      <p class="ssub">1.4 · 1.5 — Representación y redondeo</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Un <strong>número exacto</strong> es el que resulta de un conteo o una operación algebraica exacta. Un <strong>número aproximado</strong> es el que proviene de una medición, de una representación truncada o de un cálculo con precisión finita.</p>
+    <p>Existen dos formas de reducir dígitos:</p>
+    <ul>
+      <li><strong>Truncamiento:</strong> se eliminan los dígitos a la derecha de la posición deseada sin ningún ajuste. Para valores positivos aproxima por defecto; para negativos, por exceso: se mueve hacia cero.</li>
+      <li><strong>Redondeo:</strong> se elige el número representable más cercano. En un empate exacto hay que declarar la convención: al par o alejándose de cero.</li>
+    </ul>
+    <div class="fbox">
+      <div class="flabel">Redondeo al más cercano con empate al par</div>
+      <p>Para conservar d decimales, escala la magnitud: y=|x|×10<sup>d</sup>. Sea k=⌊y⌋ y r=y−k.</p>
+      <ul><li>Si r&lt;0.5, conserva k.</li><li>Si r&gt;0.5, usa k+1.</li><li>Si r=0.5 exactamente, elige k cuando es par y k+1 cuando es impar.</li></ul>
+      <p>Restaura la escala dividiendo por 10<sup>d</sup> y el signo original. Para empates alejados de cero se usa k+1 cuando r=0.5.</p>
+    </div>
+    <div class="ibox warn"><i class="fa-solid fa-triangle-exclamation"></i><p><strong>Cancelación catastrófica:</strong> restar dos números aproximados casi iguales puede eliminar la mayoría de las cifras significativas y amplificar enormemente el error relativo.</p></div>
+  </div>
+
+  <!-- CALCULADORA: Redondeo -->
+  <div class="calc">
+    <div class="calc-head"><i class="fa-solid fa-calculator"></i> Calculadora — Redondeo y truncamiento</div>
+    <div class="calc-body">
+      <div class="crow">
+        <div class="field"><label for="c-round-num">Número</label><input type="number" id="c-round-num" placeholder="Ej: 3.14159265" step="any"></div>
+        <div class="field"><label for="c-round-dec">Decimales a conservar</label><input type="number" id="c-round-dec" placeholder="Ej: 3" min="0" max="10" value="3"></div>
+      </div>
+      <div class="calc-actions"><button class="cbtn" onclick="calcRound()">Calcular</button> <button class="sample-btn" data-example="round">Probar ejemplo</button></div>
+      <div class="field"><label for="c-round-mode">Regla para empates exactos</label><select id="c-round-mode"><option value="even">Al par (convención del libro)</option><option value="away">Alejarse de cero</option></select><p>La regla solo cambia empates exactos: 2.345 a dos decimales da 2.34 al par o 2.35 al alejarse de cero.</p></div>
+      <p class="calc-status" id="status-round" role="status" hidden></p>
+      <div class="cres" id="res-round">
+        <div class="rrow"><span class="rl">Número original</span><span class="rv" id="rr-orig"></span></div>
+        <div class="rrow"><span class="rl">Truncado</span><span class="rv" id="rr-trunc"></span></div>
+        <div class="rrow"><span class="rl">Redondeado</span><span class="rv g" id="rr-round"></span></div>
+        <div class="rrow"><span class="rl">Error de truncamiento</span><span class="rv w" id="rr-etrunc"></span></div>
+        <div class="rrow"><span class="rl">Error de redondeo</span><span class="rv" id="rr-eround"></span></div>
+      </div>
+      <figure class="module-chart" id="chart-round" hidden>
+        <figcaption></figcaption>
+        <div><canvas aria-hidden="true"></canvas></div>
+      </figure>
+    </div>
+  </div>
+  </div>
+
+  <div class="qbox" id="quiz-s2">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 2</div>
+      <span class="qbadge" id="qbadge-s2">0 / 2</span>
+    </div>
+    <div class="qbody" id="qbody-s2"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 3: ERROR ABSOLUTO Y RELATIVO
+══════════════════════════════════════ -->
+<section class="ls" id="s3" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s3">3</div>
+    <div>
+      <h2 class="stitle">Error absoluto y relativo</h2>
+      <p class="ssub">1.6 — Medición del error</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Para cuantificar cuán lejos está una aproximación del valor verdadero se definen tres medidas:</p>
+    <div class="fbox">
+      <div class="flabel">Definiciones fundamentales</div>
+      \[E_a = |x_v - x_a| \qquad \text{(Error absoluto)}\]
+      \[E_r = \frac{E_a}{|x_v|} \qquad \text{(Error relativo)}\]
+      \[E_\% = E_r \times 100\% \qquad \text{(Error porcentual)}\]
+    </div>
+    <p>donde \(x_v\) es el valor verdadero y \(x_a\) es el valor aproximado.</p>
+    <div class="ibox tip"><i class="fa-solid fa-circle-info"></i><p>En la práctica, el valor verdadero casi nunca se conoce. Se usa una <strong>estimación del error</strong> comparando iteraciones sucesivas: \(\varepsilon_a = \left|\frac{x_{n+1}-x_n}{x_{n+1}}\right| \times 100\%\)</p></div>
+  </div>
+
+  <!-- EJEMPLO -->
+  <div class="ex">
+    <div class="ex-head"><i class="fa-solid fa-pen-to-square"></i> Ejemplo resuelto — Aproximar π</div>
+    <div class="ex-body">
+      <p>Calcula los errores al aproximar \(\pi \approx 3.14159\) con \(x_a = 3.14\).</p>
+      <div class="step"><div class="step-n">1</div><div class="step-c">Valor verdadero: \(x_v = \pi = 3.14159265...\), Aproximado: \(x_a = 3.14\)</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-c">Error absoluto: \(E_a = |3.14159... - 3.14| = 0.00159...\)</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-c">Error relativo: \(E_r = \dfrac{0.00159...}{3.14159...} = 0.000506...\)</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-c">Error porcentual: \(E_\% = 0.000506... \times 100\% = 0.0506\%\)</div></div>
+      <div class="ex-res"><i class="fa-solid fa-check-circle"></i><span>La aproximación 3.14 tiene un error de <strong>0.0506%</strong> respecto a π.</span></div>
+    </div>
+  </div>
+
+  <!-- CALCULADORA ERROR -->
+  <div class="calc">
+    <div class="calc-head"><i class="fa-solid fa-bullseye"></i> Calculadora — Error absoluto y relativo</div>
+    <div class="calc-body">
+      <div class="crow">
+        <div class="field"><label for="c-xv">Valor verdadero \(x_v\)</label><input type="number" id="c-xv" placeholder="Ej: 3.14159265" step="any"></div>
+        <div class="field"><label for="c-xa">Valor aproximado \(x_a\)</label><input type="number" id="c-xa" placeholder="Ej: 3.14" step="any"></div>
+      </div>
+      <div class="calc-actions"><button class="cbtn" onclick="calcError()">Calcular errores</button> <button class="sample-btn" data-example="err">Probar ejemplo</button></div>
+      <p class="calc-status" id="status-err" role="status" hidden></p>
+      <div class="cres" id="res-err">
+        <div class="rrow"><span class="rl">Error absoluto \(E_a\)</span><span class="rv" id="re-abs"></span></div>
+        <div class="rrow"><span class="rl">Error relativo \(E_r\)</span><span class="rv" id="re-rel"></span></div>
+        <div class="rrow"><span class="rl">Error porcentual \(E_\%\)</span><span class="rv g" id="re-pct"></span></div>
+        <div class="rrow"><span class="rl">Cifras decimales correctas</span><span class="rv" id="re-dig"></span></div>
+      </div>
+      <figure class="module-chart" id="chart-err" hidden>
+        <figcaption></figcaption>
+        <div><canvas aria-hidden="true"></canvas></div>
+      </figure>
+    </div>
+  </div>
+
+  <!-- CÓDIGO Python -->
+  <details style="margin:16px 0">
+    <summary style="cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:600;padding:8px 0"><i class="fa-brands fa-python"></i> Ver código Python equivalente</summary>
+    <pre><code class="language-python">x_v = 3.14159265  # valor verdadero
+x_a = 3.14        # valor aproximado
+
+e_abs = abs(x_v - x_a)
+e_rel = e_abs / abs(x_v)
+e_pct = e_rel * 100
+
+print(f"Error absoluto:    {e_abs:.8f}")
+print(f"Error relativo:    {e_rel:.8f}")
+print(f"Error porcentual:  {e_pct:.6f}%")</code></pre>
+  </details>
+  </div>
+
+  <div class="qbox" id="quiz-s3">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 3</div>
+      <span class="qbadge" id="qbadge-s3">0 / 3</span>
+    </div>
+    <div class="qbody" id="qbody-s3"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 4: CLASIFICACIÓN DE ERRORES
+══════════════════════════════════════ -->
+<section class="ls" id="s4" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s4">4</div>
+    <div>
+      <h2 class="stitle">Clasificación de los errores</h2>
+      <p class="ssub">1.7 — Tipos y fuentes de error</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Los errores en métodos numéricos tienen tres fuentes principales:</p>
+    <ol>
+      <li><strong>Error inherente (o de los datos):</strong> proviene de imprecisiones en los datos de entrada. Las mediciones físicas siempre tienen incertidumbre. Este error no lo introduce el método, ya viene en los datos.</li>
+      <li><strong>Error de truncamiento:</strong> ocurre cuando un proceso matemático <em>infinito</em> se reemplaza por uno <em>finito</em>. Ejemplo: calcular \(e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}\) y detener la suma en el término \(n=4\).</li>
+      <li><strong>Error de redondeo:</strong> surge de la representación finita de los números en la computadora. Ningún número irracional ni muchos racionales tienen representación exacta en binario de precisión finita.</li>
+    </ol>
+    <div class="fbox">
+      <div class="flabel">Ejemplo: serie de Taylor truncada para e^x</div>
+      \[e^x \approx 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \underbrace{\frac{x^4}{4!}}_{\text{último término}} + \underbrace{R_4(x)}_{\text{error de truncamiento}}\]
+    </div>
+    <div class="ibox warn"><i class="fa-solid fa-triangle-exclamation"></i><p>Los tres tipos de error pueden <strong>acumularse</strong>. Un método que parece preciso puede volverse inestable si el error de redondeo se amplifica en cada iteración.</p></div>
+  </div>
+  </div>
+
+  <div class="qbox" id="quiz-s4">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 4</div>
+      <span class="qbadge" id="qbadge-s4">0 / 2</span>
+    </div>
+    <div class="qbody" id="qbody-s4"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 5: CIFRAS SIGNIFICATIVAS
+══════════════════════════════════════ -->
+<section class="ls" id="s5" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s5">5</div>
+    <div>
+      <h2 class="stitle">Cifras significativas</h2>
+      <p class="ssub">1.8 — Dígitos confiables</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Las <strong>cifras significativas</strong> son los dígitos que realmente contienen información sobre la magnitud del número. Las reglas para contarlas son:</p>
+    <ul>
+      <li>Todos los dígitos distintos de cero <strong>son</strong> significativos.</li>
+      <li>Los ceros <em>entre</em> dígitos significativos <strong>son</strong> significativos. Ej: 4003 → 4 c.s.</li>
+      <li>Los ceros a la <em>izquierda</em> del primer dígito distinto de cero <strong>no son</strong> significativos. Ej: 0.00450 → 3 c.s.</li>
+      <li>Los ceros a la <em>derecha</em> del punto decimal <strong>son</strong> significativos. Ej: 2.500 → 4 c.s.</li>
+    </ul>
+    <div class="fbox">
+      <div class="flabel">Relación entre cifras significativas y error relativo</div>
+      <p>Para redondear a \(n\) cifras significativas, cuenta desde el primer dígito distinto de cero y aplica la regla de redondeo a la primera cifra descartada. Por ejemplo, 2.546 a 3 cifras se redondea a 2.55.</p>
+      \[E_r \leq 0.5 \times 10^{1-n}\quad\text{(criterio relativo orientativo)}\]
+      <p style="font-size:14px;color:var(--muted);margin-top:8px">Umbral del criterio para n = 3: \(E_r \approx 5 \times 10^{-3} = 0.5\%\)</p>
+    </div>
+  </div>
+
+  <!-- CALCULADORA CIFRAS SIG -->
+  <div class="calc">
+    <div class="calc-head"><i class="fa-solid fa-hashtag"></i> Calculadora — Cifras significativas</div>
+    <div class="calc-body">
+      <div class="field"><label for="c-sig">Número</label><input type="text" id="c-sig" placeholder="Ej: 0.00450  o  1.0030e3" style="max-width:280px"></div>
+      <div class="calc-actions"><button class="cbtn" onclick="calcSig()">Analizar</button> <button class="sample-btn" data-example="sig">Probar ejemplo</button></div>
+      <p class="calc-status" id="status-sig" role="status" hidden></p>
+      <div class="cres" id="res-sig">
+        <div class="rrow"><span class="rl">Cifras significativas</span><span class="rv g" id="rs-count"></span></div>
+        <div class="rrow"><span class="rl">Umbral orientativo del curso</span><span class="rv" id="rs-er"></span></div>
+        <div class="rrow"><span class="rl">Notación científica</span><span class="rv" id="rs-sci"></span></div>
+        <div class="rrow"><span class="rl">Dígitos significativos</span><span class="rv" id="rs-digits"></span></div>
+      </div>
+      <figure class="module-chart" id="chart-sig" hidden>
+        <figcaption></figcaption>
+        <div><canvas aria-hidden="true"></canvas></div>
+      </figure>
+    </div>
+  </div>
+  </div>
+
+  <div class="qbox" id="quiz-s5">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 5</div>
+      <span class="qbadge" id="qbadge-s5">0 / 3</span>
+    </div>
+    <div class="qbody" id="qbody-s5"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 6: PROPAGACIÓN DE ERRORES
+══════════════════════════════════════ -->
+<section class="ls" id="s6" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s6">6</div>
+    <div>
+      <h2 class="stitle">Propagación de errores</h2>
+      <p class="ssub">1.9 · 1.10 · 1.11 · 1.12 · 1.13 — Cómo se acumulan los errores</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Cuando operamos con números aproximados, el error se <strong>propaga</strong> según la operación realizada.</p>
+    <div class="fbox">
+      <div class="flabel">Fórmulas de propagación</div>
+      \[\Delta(u \pm v) = \Delta u + \Delta v \qquad \text{(suma y resta — errores absolutos)}\]
+      \[\frac{\Delta(u \cdot v)}{|u \cdot v|} \approx \frac{\Delta u}{|u|} + \frac{\Delta v}{|v|} \qquad \text{(producto — errores relativos)}\]
+      \[\frac{\Delta(u / v)}{|u / v|} \approx \frac{\Delta u}{|u|} + \frac{\Delta v}{|v|} \qquad \text{(cociente — errores relativos)}\]
+      \[\frac{\Delta(u^n)}{|u^n|} \approx |n| \cdot \frac{\Delta u}{|u|} \qquad \text{(potencia — error relativo)}\]
+    </div>
+    <div class="ibox tip"><i class="fa-solid fa-circle-info"></i><p>Para la <strong>suma y resta</strong> conviene trabajar con errores absolutos. Para <strong>producto, cociente y potencia</strong> conviene trabajar con errores relativos.</p></div>
+  </div>
+
+  <!-- EJEMPLO propagación -->
+  <div class="ex">
+    <div class="ex-head"><i class="fa-solid fa-pen-to-square"></i> Ejemplo — Propagación en un producto</div>
+    <div class="ex-body">
+      <p>Sea \(u = 3.0 \pm 0.1\) y \(v = 2.0 \pm 0.05\). Calcula el error de \(u \cdot v\).</p>
+      <div class="step"><div class="step-n">1</div><div class="step-c">Resultado central: \(u \cdot v = 6.0\)</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-c">Error relativo: \(\dfrac{\Delta u}{u} + \dfrac{\Delta v}{v} = \dfrac{0.1}{3.0} + \dfrac{0.05}{2.0} = 0.0333 + 0.025 = 0.0583\)</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-c">Error absoluto: \(0.0583 \times 6.0 = 0.35\)</div></div>
+      <div class="ex-res"><i class="fa-solid fa-check-circle"></i><span>\(u \cdot v = 6.0 \pm 0.35\) — error relativo \(\approx\) <strong>5.83%</strong></span></div>
+    </div>
+  </div>
+
+  <!-- CALCULADORA PROPAGACIÓN -->
+  <div class="calc">
+    <div class="calc-head"><i class="fa-solid fa-arrows-left-right-to-line"></i> Calculadora — Propagación de errores</div>
+    <div class="calc-body">
+      <div class="field" style="max-width:280px">
+        <label for="c-op">Operación</label>
+        <select id="c-op">
+          <option value="add">Suma u + v</option>
+          <option value="sub">Resta u − v</option>
+          <option value="mul" selected>Producto u × v</option>
+          <option value="div">Cociente u / v</option>
+          <option value="pow">Potencia u^n</option>
+          <option value="root">Raíz de índice n de u</option>
+        </select>
+      </div>
+      <div class="crow">
+        <div class="field"><label for="c-u">Valor u</label><input type="number" id="c-u" placeholder="Ej: 3.0" step="any"></div>
+        <div class="field"><label for="c-du">Error Δu</label><input type="number" id="c-du" placeholder="Ej: 0.1" step="any" min="0"></div>
+      </div>
+      <div class="crow" id="c-v-row">
+        <div class="field"><label for="c-v">Valor v <span id="c-v-label">(o n para potencia)</span></label><input type="number" id="c-v" placeholder="Ej: 2.0" step="any"></div>
+        <div class="field" id="c-dv-field"><label for="c-dv">Error Δv</label><input type="number" id="c-dv" placeholder="Ej: 0.05" step="any" min="0"></div>
+      </div>
+      <div class="calc-actions"><button class="cbtn" onclick="calcProp()">Calcular propagación</button> <button class="sample-btn" data-example="prop">Probar ejemplo</button></div>
+      <p class="calc-status" id="status-prop" role="status" hidden></p>
+      <div class="cres" id="res-prop">
+        <div class="rrow"><span class="rl">Resultado central</span><span class="rv" id="rp-res"></span></div>
+        <div class="rrow"><span class="rl">Error absoluto Δf</span><span class="rv w" id="rp-abs"></span></div>
+        <div class="rrow"><span class="rl">Error relativo</span><span class="rv" id="rp-rel"></span></div>
+        <div class="rrow"><span class="rl">Error porcentual</span><span class="rv g" id="rp-pct"></span></div>
+        <div class="rrow"><span class="rl">Resultado con error</span><span class="rv" id="rp-full"></span></div>
+      </div>
+      <figure class="module-chart" id="chart-prop" hidden>
+        <figcaption></figcaption>
+        <div><canvas aria-hidden="true"></canvas></div>
+      </figure>
+    </div>
+  </div>
+
+  <details style="margin:16px 0">
+    <summary style="cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:600;padding:8px 0"><i class="fa-brands fa-python"></i> Ver código Python</summary>
+    <pre><code class="language-python">import math
+
+def propagar_error(u, du, v, dv, op):
+    """Cotas de suma/resta; estimación de primer orden en otras operaciones."""
+    if not all(math.isfinite(x) for x in (u, du, v, dv)) or min(du, dv) &lt; 0:
+        raise ValueError("Datos finitos e incertidumbres no negativas")
+    if op in ('+', '-'):
+        res = u + v if op == '+' else u - v
+        e_abs = du + dv
+    elif op == '*':
+        res = u * v
+        e_abs = abs(v) * du + abs(u) * dv
+    elif op == '/':
+        if abs(v) &lt;= dv:
+            raise ValueError("El divisor puede ser cero")
+        res = u / v
+        e_abs = du / abs(v) + abs(u) * dv / v**2
+    elif op in ('pow', 'root'):
+        if op == 'root' and not float(v).is_integer():
+            raise ValueError("Índice entero")
+        if op == 'root' and (v &lt; 2 or u - du &lt;= 0):
+            raise ValueError("Índice ≥2 e intervalo positivo")
+        p = 1 / v if op == 'root' else v
+        if (p % 1 != 0 and u - du &lt;= 0) or (p &lt; 0 and abs(u) &lt;= du):
+            raise ValueError("Fuera del dominio de la potencia")
+        res = u**p
+        e_abs = 0 if p == 0 or du == 0 else abs(p * u**(p-1)) * du
+    else:
+        raise ValueError("Operación desconocida")
+    e_rel = e_abs / abs(res) if res != 0 else None
+    return res, e_abs, e_rel</code></pre>
+  </details>
+  </div>
+
+  <div class="qbox" id="quiz-s6">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 6</div>
+      <span class="qbadge" id="qbadge-s6">0 / 3</span>
+    </div>
+    <div class="qbody" id="qbody-s6"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 7: CONDICIONAMIENTO
+══════════════════════════════════════ -->
+<section class="ls" id="s7" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s7">7</div>
+    <div>
+      <h2 class="stitle">Condicionamiento de un problema</h2>
+      <p class="ssub">Ampliación A — Sensibilidad de la solución a perturbaciones</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>El <strong>número de condición</strong> \(\kappa\) mide cuánto se amplifica un pequeño error en los datos al calcular la solución.</p>
+    <div class="fbox">
+      <div class="flabel">Número de condición (caso escalar)</div>
+      \[\kappa(x) = \left| \frac{x \cdot f'(x)}{f(x)} \right|\]
+      <p style="font-size:14px;color:var(--muted);margin-top:8px">Si \(\kappa \gg 1\) el problema está <strong>mal condicionado</strong>: pequeños errores en la entrada se amplifican enormemente en la salida.</p>
+    </div>
+    <ul>
+      <li><strong>Bien condicionado</strong> (\(\kappa\) pequeño): la solución cambia poco aunque los datos tengan pequeños errores.</li>
+      <li><strong>Mal condicionado</strong> (\(\kappa \gg 1\)): la solución puede variar drásticamente con cambios minúsculos en los datos.</li>
+    </ul>
+    <div class="ibox warn"><i class="fa-solid fa-triangle-exclamation"></i><p>El mal condicionamiento es una <strong>propiedad del problema</strong>, no del algoritmo. No puedes resolverlo cambiando de método; debes reestructurar el problema o conseguir datos más precisos. La estabilidad del algoritmo es una cuestión distinta.</p></div>
+    <div class="ex">
+      <div class="ex-head"><i class="fa-solid fa-pen-to-square"></i> Ejemplo — Cancelación catastrófica</div>
+      <div class="ex-body">
+        <p>Calcula \(f(x) = \sqrt{x+1} - \sqrt{x}\) para \(x = 10000\) con 5 cifras significativas.</p>
+        <div class="step"><div class="step-n">1</div><div class="step-c">Con 5 cifras significativas y empates alejados de cero: \(\sqrt{10001} \approx 100.00\) y \(\sqrt{10000}=100.00\). La resta da 0: se pierde el resultado por cancelación.</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-c">Reformulado: \(f(x)=1/(\sqrt{x+1}+\sqrt{x})\). Conservando dígitos de guarda se obtiene aproximadamente 0.004999875. Esta forma evita restar cantidades casi iguales.</div></div>
+        <div class="ex-res"><i class="fa-solid fa-check-circle"></i><span>Aquí el problema está bien condicionado (κ ≈ 0.5), pero la resta directa es inestable. Reformular mejora el algoritmo; no cambia la sensibilidad del problema.</span></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="qbox" id="quiz-s7">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 7</div>
+      <span class="qbadge" id="qbadge-s7">0 / 2</span>
+    </div>
+    <div class="qbody" id="qbody-s7"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 8: CONVERGENCIA
+══════════════════════════════════════ -->
+<section class="ls" id="s8" hidden>
+  <div class="sh">
+    <div class="snum" id="snum-s8">8</div>
+    <div>
+      <h2 class="stitle">Orden y convergencia de un método iterativo</h2>
+      <p class="ssub">Ampliación B — Velocidad de convergencia</p>
+    </div>
+  </div>
+  <div class="lesson-content">
+  <div class="th">
+    <p>Un método iterativo genera una secuencia \(x_0, x_1, x_2, \ldots\) que converge hacia la solución exacta \(x^*\). El <strong>orden de convergencia</strong> \(p\) dice qué tan rápido decrece el error:</p>
+    <div class="fbox">
+      <div class="flabel">Orden de convergencia</div>
+      \[|e_{n+1}| \leq C \cdot |e_n|^p \qquad \text{donde } e_n = x_n - x^*\]
+      <ul style="font-size:14px;color:var(--muted);margin-top:10px;padding-left:0;list-style:none">
+        <li>• \(p = 1\): <strong>Convergencia lineal</strong> — dígitos correctos crecen linealmente</li>
+        <li>• \(p = 2\): <strong>Convergencia cuadrática</strong> — dígitos correctos casi se duplican por iteración</li>
+        <li>• \(p = 3\): <strong>Convergencia cúbica</strong> — dígitos correctos casi se triplican</li>
+      </ul>
+    </div>
+    <p>Para estimar el orden empíricamente con tres errores consecutivos:</p>
+    <div class="fbox">
+      \[p \approx \frac{\ln(e_{n+1}/e_n)}{\ln(e_n/e_{n-1})}\]
+    </div>
+  </div>
+
+  <!-- CALCULADORA CONVERGENCIA + GRÁFICO -->
+  <div class="calc">
+    <div class="calc-head"><i class="fa-solid fa-chart-line"></i> Calculadora — Orden de convergencia</div>
+    <div class="calc-body">
+      <p style="font-size:14px;color:var(--muted)">Ingresa al menos 3 valores de error (uno por línea). Ejemplo: errores por iteración de un método.</p>
+      <div class="field">
+        <label for="c-conv">Secuencia de errores (un valor por línea)</label>
+        <textarea id="c-conv" rows="5" style="padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-family:var(--fm);font-size:14px;resize:vertical;width:100%" placeholder="0.5&#10;0.1&#10;0.01&#10;0.0001"></textarea>
+      </div>
+      <div class="calc-actions"><button class="cbtn" onclick="calcConv()">Analizar convergencia</button> <button class="sample-btn" data-example="conv">Probar ejemplo</button></div>
+      <p class="calc-status" id="status-conv" role="status" hidden></p>
+      <div class="cres" id="res-conv">
+        <div class="rrow"><span class="rl">Orden estimado</span><span class="rv g" id="rc-p"></span></div>
+        <div class="rrow"><span class="rl">Tipo de convergencia</span><span class="rv" id="rc-type"></span></div>
+        <div class="rrow"><span class="rl">Constante C estimada</span><span class="rv" id="rc-c"></span></div>
+      </div>
+      <figure class="module-chart" id="chart-conv" hidden>
+        <figcaption></figcaption>
+        <div><canvas aria-hidden="true"></canvas></div>
+      </figure>
+    </div>
+  </div>
+
+  <details style="margin:16px 0">
+    <summary style="cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:600;padding:8px 0"><i class="fa-brands fa-python"></i> Ver código Python</summary>
+    <pre><code class="language-python">import math
+
+errores = [0.5, 0.1, 0.01, 0.0001]
+
+print("n | e_n        | p estimado")
+print("-" * 35)
+for i in range(1, len(errores) - 1):
+    p = math.log(errores[i+1] / errores[i]) / \
+        math.log(errores[i] / errores[i-1])
+    print(f"{i} | {errores[i]:.6f} | {p:.4f}")</code></pre>
+  </details>
+  </div>
+
+  <div class="qbox" id="quiz-s8">
+    <div class="qhead">
+      <div class="qhead-l"><i class="fa-solid fa-circle-question"></i> Preguntas rápidas — Sección 8</div>
+      <span class="qbadge" id="qbadge-s8">0 / 3</span>
+    </div>
+    <div class="qbody" id="qbody-s8"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     EXAMEN FINAL
+══════════════════════════════════════ -->
+<section class="exambox" id="exam" hidden>
+  <div class="exam-hd">
+    <div class="ico"><i class="fa-solid fa-scroll"></i></div>
+    <div>
+      <h2>Examen Final — Módulo 1: Errores</h2>
+      <p id="exam-rules">24 preguntas: tres por tema. Selección y respuesta numérica. Apruebas con 16 aciertos.</p>
+    </div>
+  </div>
+  <div class="exam-body">
+    <div id="exam-active">
+      <div class="eprog">
+        <span id="exam-q-label">Pregunta 1 de 24</span>
+        <div class="eprog-track"><div class="eprog-fill" id="exam-prog" style="width:6.67%"></div></div>
+      </div>
+      <div class="eq">
+        <span class="eqn" id="exam-qn"></span>
+        <span id="exam-qtxt" tabindex="-1"></span>
+      </div>
+      <div class="opts" id="exam-opts"></div>
+      <div class="enav">
+        <button class="ebtn s" id="exam-prev" onclick="examNav(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Anterior</button>
+        <button class="ebtn p" id="exam-next" onclick="examNav(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="eresults" id="exam-results">
+      <div class="score-wrap">
+        <div class="score-circle" id="score-circle"></div>
+        <div class="score-label"><strong id="score-msg"></strong><span id="score-sub"></span></div>
+      </div>
+      <div class="ereview" id="exam-review">
+        <h3>Revisión detallada</h3>
+        <div id="exam-review-items"></div>
+      </div>
+      <button class="retry-btn" onclick="examReset()"><i class="fa-solid fa-rotate-right"></i> Intentar de nuevo</button>
+    </div>
+  </div>
+</section>
+
+
+<section class="study-resource" id="video" hidden aria-labelledby="video-title">
+  <h2 id="video-title">Video del módulo</h2>
+  <p>Aproximaciones y errores. Truncado, redondeo, error absoluto y error relativo.</p>
+  <video id="module-video" class="video-player" controls playsinline preload="metadata" aria-label="Video del módulo 1: errores numéricos">
+    <source src="../videos/Modulo_1_Animado.mp4" type="video/mp4">
+    Tu navegador no admite este video. <a href="../videos/Modulo_1_Animado.mp4">Abrir video MP4</a>.
+  </video>
+  <a class="video-link" href="../videos/Modulo_1_Animado.mp4" download>Descargar video del módulo 1</a>
+</section>
+
+<section class="study-resource" id="formulas" hidden aria-labelledby="formulas-title">
+  <h2 id="formulas-title">Fórmulas de errores numéricos</h2>
+  <p>Consulta estas fórmulas mientras estudias o resuelves ejercicios.</p>
+  <div class="formula-grid">
+    <article class="fbox">
+      <h3>Redondeo y truncamiento</h3>
+      <p>Para conservar \(d\) decimales, usa \(m=10^d\). Elige la regla del empate: al par (libro) o alejarse de cero. El truncamiento siempre se hace hacia cero.</p>
+      \[T_d(x)=\frac{\operatorname{trunc}(mx)}{m}\]
+      <p>Solo para la convención de empates alejados de cero:</p>\[R_d(x)=\frac{\operatorname{sgn}(x)\lfloor m|x|+0.5\rfloor}{m}\]<p>Para empate al par, elige el vecino cuyo último dígito sea par cuando la parte descartada sea exactamente la mitad.</p>
+    </article>
+    <article class="fbox">
+      <h3>Error absoluto y relativo</h3>
+      <p>\(x_v\) es el valor verdadero y \(x_a\) el aproximado. El error relativo queda indefinido si \(x_v=0\).</p>
+      \[E_a=|x_v-x_a|,\quad E_r=\frac{E_a}{|x_v|}\]
+      \[E_{\%}=100E_r\,\%\]
+    </article>
+    <article class="fbox">
+      <h3>Error entre iteraciones</h3>
+      <p>Estima el cambio relativo cuando se desconoce el valor exacto y \(x_{n+1}\ne0\).</p>
+      \[\varepsilon_a=\left|\frac{x_{n+1}-x_n}{x_{n+1}}\right|\,100\,\%\]
+    </article>
+    <article class="fbox">
+      <h3>Cifras significativas</h3>
+      <p>Criterio absoluto del libro para \(a=c\times10^m\), con \(1\le |c|&lt;10\):</p>\[E_a\le0.5\times10^{m-n+1}\]<p>Umbral relativo orientativo adicional, sin equivalencia universal con la garantía anterior:</p>
+      \[E_r\le 0.5\times10^{1-n}\]
+    </article>
+    <article class="fbox">
+      <h3>Propagación del error</h3>
+      <p>\(\Delta u\) y \(\Delta v\) son incertidumbres absolutas. Para producto, cociente y potencia se usa una aproximación de primer orden.</p>
+      \[\Delta(u\pm v)\le \Delta u+\Delta v\]
+      \[E_r(uv),\ E_r(u/v)\ \approx\ \frac{\Delta u}{|u|}+\frac{\Delta v}{|v|}\]
+      \[E_r(u^n)\approx |n|\frac{\Delta u}{|u|}\]\[E_r(\sqrt[n]{u})\approx\frac{1}{n}\frac{\Delta u}{|u|}\]<p>Para la raíz del laboratorio se requiere n entero ≥2 y un intervalo del radicando estrictamente positivo. En cocientes se exige que el intervalo del divisor no contenga cero.</p>
+      <p>Las expresiones relativas requieren un resultado nominal distinto de cero.</p>
+    </article>
+    <article class="fbox">
+      <h3>Condicionamiento</h3>
+      <p>El número de condición mide la amplificación local del error relativo. Se usa cuando \(f(x)\ne0\).</p>
+      \[\kappa(x)=\left|\frac{x f'(x)}{f(x)}\right|\]
+    </article>
+    <article class="fbox">
+      <h3>Orden de convergencia</h3>
+      <p>Usa tres magnitudes consecutivas de error positivas y un denominador distinto de cero.</p>
+      \[p\approx\frac{\ln(|e_{n+1}|/|e_n|)}{\ln(|e_n|/|e_{n-1}|)}\]
+    </article>
+  </div>
+</section>
+
+<section class="study-resource" id="progress" hidden aria-labelledby="progress-title">
+<h2 id="progress-title">Guardar y recuperar progreso</h2>
+<p>Exporta un respaldo JSON para conservar el avance de este módulo. Importarlo sustituye sus respuestas y progreso en este navegador.</p>
+<button type="button" class="qbtn" id="export-progress" onclick="exportProgress()">Exportar progreso</button>
+<label for="import-progress">Importar respaldo JSON</label><input type="file" id="import-progress" accept=".json,application/json">
+<button type="button" class="qbtn" id="reset-progress" onclick="resetProgress()">Reiniciar este módulo</button>
+<p id="progress-status" role="status"></p>
+</section>
+</main>
+</div>
+
+<!-- Scripts -->
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/auto-render.min.js"></script>
+<script src="../assets/vendor/chart.umd.min.js"></script>
+<script src="../assets/vendor/prism.min.js"></script>
+<script src="../assets/vendor/prism-python.min.js"></script>
+
+<script src="preguntas.js"></script>
+<script src="banco-ampliado.js"></script>
+<script src="../assets/course/module-navigation.js"></script>
+<script src="modulo.js"></script>
+<script src="mejoras.js"></script>
+<script src="aprendizaje.js"></script>
+<script src="progreso.js"></script>
+<script src="../assets/course/review.js"></script>
+</body>
+</html>
